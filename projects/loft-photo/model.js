@@ -1,6 +1,6 @@
 const PREM_FRIENDS = 2;
 const PREM_PHOTOS = 4;
-const APP_ID = 19845;
+const APP_ID = 51732801;
 
 export default {
   getRandomElement(array) {
@@ -8,10 +8,11 @@ export default {
       return null;
     }
 
-    const index = Match.round(Math.random() * (array.length - 1));
+    const index = Math.round(Math.random() * (array.length - 1));
 
     return array[index];
   },
+  
   async getNextPhoto() {
     const friend = this.getRandomElement(this.friends.items);
     const photos = await this.getFriendPhotos(friend.id);
