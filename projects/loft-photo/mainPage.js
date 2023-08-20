@@ -1,4 +1,3 @@
-import pages from './pages';
 import model from './model';
 
 export default {
