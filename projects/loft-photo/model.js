@@ -1,5 +1,5 @@
-const PREM_FRIENDS = 2;
-const PREM_PHOTOS = 4;
+const PERM_FRIENDS = 2;
+const PERM_PHOTOS = 4;
 const APP_ID = 51732801;
 
 export default {
@@ -52,9 +52,13 @@ export default {
 
       VK.Auth.login((response) => {
         if (response.session) {
+          this.token = response.session.sid;
           resolve(response);
+        } else {
+          console.error(response);
+          reject(response);
         }
-      }, PREM_FRIENDS | PREM_PHOTOS);
+      }, PERM_FRIENDS | PERM_PHOTOS);
     });
   },
 
@@ -116,6 +120,49 @@ export default {
     }
 
     return this.callApi('users.get', params);
+  },
+
+  async callServer(method, queryParams, body) {
+    queryParams = {
+      ...queryParams,
+      method,
+    };
+    const query = Object.entries(queryParams)
+      .reduce((all, [name, value]) => {
+        all.push(`${name}=${encodeURIComponent(value)}`);
+        return all;
+      }, [])
+      .join('&');
+    const params = {
+      headers: {
+        vk_token: this.token,
+      },
+    };
+
+    if (body) {
+      params.method = 'POST';
+      params.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(`/loft-photo/api/?${query}`, params);
+
+    return response.json();
+  },
+
+  async like(photo) {
+    return this.callServer('like', { photo });
+  },
+
+  async photoStats(photo) {
+    return this.callServer('photoStats', { photo });
+  },
+
+  async getComments(photo) {
+    return this.callServer('getComments', { photo });
+  },
+
+  async postComment(photo, text) {
+    return this.callServer('postComment', { photo }, { text });
   },
 };
 
