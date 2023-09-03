@@ -33,11 +33,12 @@ export default {
         if (e.target.classList.contains('component-user-photo')) {
           const photoId = e.target.dataset.id;
           const friendsPhotos = await model.getPhotos(this.user.id);
+          const photoStats = await model.photoStats(photoId);
           const photo = friendsPhotos.items.find((photo) => photo.id == photoId);
           const size = model.findSize(photo);
 
-          mainPage.setFriendAndPhoto(this.user, parseInt(photoId), size.url);
-          page.openPage('main');
+          mainPage.setFriendAndPhoto(this.user, parseInt(photoId), size.url, photoStats);
+          pages.openPage('main');
         }
       });
     document.querySelector('.page-profile-back').addEventListener('click', async () => {
